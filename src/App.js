@@ -1,4 +1,4 @@
-import { Component } from "react";
+import {useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import Searchbar from "./components/Searchbar/Searchbar";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
@@ -7,64 +7,53 @@ import ImagesAPI from "../src/pixabay";
 // import { Pictures } from "./components/ImageGallery/ImageGallery.styled";
 import Button from './components/Button/Button';
 import Loader from './components/Loader/Loader';
+// import { Pictures } from "./components/ImageGallery/ImageGallery.styled";
 
 
-class App extends Component {
-  state = {
-    images: null,
-    page: 1,
-    query: '',
-    error: '',
-    status: 'idle',
-    activeImge: '',
-    tags: '',
-    showModal: false,
-    visible: true,
-  };
+export default function App () {
+  
+  const [images, setImages]= useState(null);
+  const [page, setPage]= useState(1);
+  const [query, setQuery]=  useState('');
+  const [error, setEarror]= useState('');
+  const [status, setStatus]= useState('idle');
+  const [activeImage, setActiveImage]= useState('');
+  const [tags, setTags]= useState('');
+  const [showModal, setShowModal]= useState(false);
+  const [visible, setVisible]= useState(true);
 
-  componentDidUpdate(prevProps, prevState) {
-    const { query, page } = this.state;
+  useEffect(() => {setImages([])},
+  [query])
 
-    if (prevState.query !== query) {
-      this.setState({ images: [], status: 'pending' });
-    }
-
-    if (prevState.query !== query || prevState.page !== page) {
-      if (page > 1) {
-      window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: 'smooth',
-        });
-      }
-
-      this.setState({ status: 'pending', visible: true });
-      ImagesAPI.fetchPictures(query, page)
+  useEffect(() => {
+    if (query === "") {return}    
+    setVisible(true)    
+    setStatus('pending')
+ 
+  ImagesAPI.fetchPictures(query, page)
         .then(({ hits }) => {
-        if (!query) {
-        this.setState({ status: 'idle' });
-        return this.notify();
+        if (!query) {setStatus('idle')
+        return toast.error(`Can't find Pictures. Please enter another title` )
         }
         if (hits.length === 0) {
-        this.setState({ status: 'resolved', visible: false });
-        return this.notify();
-        }
-        this.setState(({ images }) => ({
-        images: [...images, ...hits],
-        status: 'resolved',
-          }));
-        if (page > 1) {
-          this.scrollTo();
-        }
-        return hits;
-        })
-        .then(hits => this.scrollTo())
-        .catch(error => {
-          this.setState({ error, status: 'rejected' });
-        });
-    }
-  }
-
-  scrollTo = () => {
+          setStatus('resolved')
+          setVisible(false)                    
+          return toast.error(`Can't find Pictures. Please enter another title` )}
+        setImages(prevImages => [...prevImages, ...hits])
+        setStatus('resolved')
+      })
+      .finally(() => {
+        if (page > 1) {scrollTo()};
+      })
+      .catch(error => {
+        setEarror(error)
+        setStatus('rejected')
+        return toast.error(`Can't find Pictures. Please enter another title`)
+      })
+    }, [query, page])
+        
+      
+ const scrollTo = () => {
     const gallery = document.querySelector('.gallery');
     const cardHeight = gallery.getBoundingClientRect().height;
     window.scrollBy({
@@ -74,37 +63,35 @@ class App extends Component {
     });
   };
 
-  handlerSubmitUserQuery = query => {
-    this.setState({ query: query.trim(), page: 1 });
+  const handlerSubmitUserQuery = query => {setQuery(query.trim())
+    setPage(1)
   };
 
-  handlerClickLoadMore = () => {
-    this.setState(({ page }) => ({ page: page + 1 }));
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1 )};
+  
+
+  // notify = () =>
+  //   toast.error(
+  //     `There are no matching images for this request: ${this.state.query} !`,
+  //   );
+
+  const handleronClickImage = (activeImage, tags) => {
+    setActiveImage(activeImage);
+    setTags(tags);
+    setShowModal(prevShowModal => !prevShowModal)
   };
 
-  notify = () =>
-    toast.error(
-      `There are no matching images for this request: ${this.state.query} !`,
-    );
-
-  handleronClickImage = (activeImge, tags) => {
-    this.setState({ activeImge, tags });
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  const toggleModal = () => {
+    setShowModal(prevShowModal => !prevShowModal)
   };
-
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
-  };
-
-  render() {
-    const { images, status, error, activeImge, showModal, tags, visible } =
-      this.state;
+  
 
     if (status === 'idle') {
       return (
         <div>
         <ToastContainer position="top-center" autoClose={2000} />
-        <Searchbar onSubmit={this.handlerSubmitUserQuery} />
+        <Searchbar onSubmit={handlerSubmitUserQuery} />
         </div>
       );
     }
@@ -112,7 +99,7 @@ class App extends Component {
     if (status === 'rejected') {
       return (
         <div>
-          <Searchbar onSubmit={this.handlerSubmitUserQuery} />
+          <Searchbar onSubmit={handlerSubmitUserQuery} />
           <h2>{error.massage}</h2>
         </div>
       );
@@ -122,10 +109,10 @@ class App extends Component {
       return (
         <div>
           <ToastContainer position="top-center" autoClose={2000} />
-          <Searchbar onSubmit={this.handlerSubmitUserQuery} />
+          <Searchbar onSubmit={handlerSubmitUserQuery} />
           <ImageGallery
             userImages={images}
-            onClick={this.handleronClickImage}
+            onClick={handleronClickImage}
           />
           <Loader />
         </div>
@@ -136,20 +123,18 @@ class App extends Component {
       return (
         <div>
           <ToastContainer position="top-center" autoClose={2000} />
-          <Searchbar onSubmit={this.handlerSubmitUserQuery} />
+          <Searchbar onSubmit={handlerSubmitUserQuery} />
           <ImageGallery
             userImages={images}
-            onClick={this.handleronClickImage}
+            onClick={handleronClickImage}
           />
           {images.length && visible && (
-            <Button onClick={this.handlerClickLoadMore} />
+            <Button onClick={handleLoadMore} />
           )}
           {showModal && (
-            <Modal image={activeImge} tags={tags} onClose={this.toggleModal} />
+            <Modal image={activeImage} tags={tags} onClose={toggleModal} />
           )}
         </div>
       );
     }
   }
-}
-export default App;

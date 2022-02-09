@@ -1,5 +1,5 @@
-import { Component } from "react";
-import PropTypes from "prop-types";
+import {useState} from "react";
+// import PropTypes from "prop-types";
 import { 
   Searchbar,
   Form, 
@@ -7,30 +7,22 @@ import {
   Icon, 
   Input } from "./Searchbar.styled";
 
-  export default class SearchBar extends Component {
-  state = {
-    imageName: "",
-  };
-
-  handleNameChange = (event) => {
-    this.setState({ imageName: event.currentTarget.value.toLowerCase() });
-  }
-
-  handleSubmit = (event) => {
+  export default function SearchBar({onSubmit}) {
+  
+   const [imageName, setImageName]= useState("")
+   const handleNameChange = event => {setImageName (event.target.value)};
+   const handleSubmit = (event) => {
     event.preventDefault();
-    if (this.state.imageName.trim() === "") {
-      return;
-    }
-    this.props.onSubmit(this.state.imageName);
-    this.setState({imageName: ""});
+    if (imageName.trim() === "") {
+      return;}
+   onSubmit(imageName);
+   setImageName('')
   };
 
-
-  render() {
     return (
       <Searchbar>
         <header>
-      <Form onSubmit={this.handleSubmit}>
+      <Form onSubmit={handleSubmit}>
         <Button type="submit">
           <Icon />
         </Button>
@@ -41,8 +33,8 @@ import {
       type="text"
       autoComplete="off"
       autoFocus
-     onChange={this.handleNameChange}
-     value={this.state.imageName}
+     onChange={handleNameChange}
+     value={imageName}
      placeholder="Search images and photos"
         />
 
@@ -50,9 +42,5 @@ import {
       </header>
       </Searchbar>
     );
-  }
-}
+  };
 
-SearchBar.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
