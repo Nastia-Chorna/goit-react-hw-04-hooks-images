@@ -18,7 +18,7 @@ export default function App () {
   const [error, setEarror]= useState('');
   const [status, setStatus]= useState('idle');
   const [activeImage, setActiveImage]= useState('');
-  const [tags, setTags]= useState('');
+ 
   const [showModal, setShowModal]= useState(false);
   const [visible, setVisible]= useState(true);
 
@@ -76,9 +76,9 @@ export default function App () {
   //     `There are no matching images for this request: ${this.state.query} !`,
   //   );
 
-  const handleronClickImage = (activeImage, tags) => {
+  const handleronClickImage = (activeImage) => {
     setActiveImage(activeImage);
-    setTags(tags);
+   
     setShowModal(prevShowModal => !prevShowModal)
   };
 
@@ -132,7 +132,7 @@ export default function App () {
             <Button onClick={handleLoadMore} />
           )}
           {showModal && (
-            <Modal image={activeImage} tags={tags} onClose={toggleModal} />
+            <Modal image={activeImage}  onClose={toggleModal} />
           )}
         </div>
       );

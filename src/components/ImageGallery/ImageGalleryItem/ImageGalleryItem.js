@@ -3,13 +3,13 @@ import {
   Item, 
   Image } from "./ImageGalleryItem.styled";
 
-  const ImageGalleryItem = ({ webformatURL, tags, largeImageURL, onClick }) => (
+  const ImageGalleryItem = ({ webformatURL, largeImageURL, onClick }) => (
     <Item
       onClick={() => {
-        onClick(largeImageURL, tags);
+        onClick(largeImageURL);
       }}
     >
-      <Image src={webformatURL} alt={tags} />
+      <Image src={webformatURL} />
     </Item>
   );
   export default ImageGalleryItem;
@@ -17,7 +17,7 @@ import {
   ImageGalleryItem.propTypes = {
     onClick: PropTypes.func.isRequired,
     webformatURL: PropTypes.string.isRequired,
-    tags: PropTypes.string.isRequired,
+  
     largeImageURL: PropTypes.string.isRequired,
   };
   

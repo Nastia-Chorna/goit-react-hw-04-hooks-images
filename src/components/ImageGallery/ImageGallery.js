@@ -15,11 +15,11 @@ import { Pictures } from "./ImageGallery.styled";
 
   const ImageGallery = ({ userImages, onClick }) => (
     <Pictures className="gallery">
-      {userImages.map(({ id, webformatURL, tags, largeImageURL }) => (
+      {userImages.map(({ id, webformatURL, largeImageURL }) => (
         <ImageGalleryItem
           key={id}
           webformatURL={webformatURL}
-          tags={tags}
+         
           largeImageURL={largeImageURL}
           onClick={onClick}
         />
