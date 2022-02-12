@@ -5,7 +5,13 @@ import {
     ModalWrap } from "./Modal.styled";
 
 
-class Modal extends Component {
+export default class Modal extends Component {
+  handleBackdropClick = (evt) => {
+    if (evt.currentTarget === evt.target) {
+      this.props.onClose();
+    }
+  };
+
   componentDidMount() {
     window.addEventListener("keydown", this.handleKeydown);
   }
@@ -16,26 +22,22 @@ class Modal extends Component {
 
   handleKeydown = (evt) => {
     if (evt.code === "Escape") {
-      this.props.onToggle();
+      this.props.onClose();
     }
   };
 
-  handleBackdropClick = (evt) => {
-    if (evt.currentTarget === evt.target) {
-      this.props.onToggle();
-    }
-  };
+ 
 
   render() {
     return (
       <Overlay onClick={this.handleBackdropClick}>
-        <ModalWrap>{this.props.children}</ModalWrap>
+        <ModalWrap>{this.props.image}</ModalWrap>
       </Overlay>
     );
   }
 }
-export default Modal;
+
 
 Modal.propTypes = {
-  onToggle: PropTypes.func.isRequired,
+  image: PropTypes.string.isRequired,
 };

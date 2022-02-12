@@ -132,7 +132,7 @@ export default function App () {
             <Button onClick={handleLoadMore} />
           )}
           {showModal && (
-            <Modal image={activeImage}  onClose={toggleModal} />
+            <Modal image={activeImage} onClose={toggleModal}/>
           )}
         </div>
       );
