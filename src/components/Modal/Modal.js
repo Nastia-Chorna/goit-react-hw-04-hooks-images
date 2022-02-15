@@ -4,7 +4,7 @@ import {
     Overlay, 
     ModalWrap } from "./Modal.styled";
 
-
+ 
 export default class Modal extends Component {
   handleBackdropClick = (evt) => {
     if (evt.currentTarget === evt.target) {
@@ -31,7 +31,9 @@ export default class Modal extends Component {
   render() {
     return (
       <Overlay onClick={this.handleBackdropClick}>
-        <ModalWrap>{this.props.image}</ModalWrap>
+        <ModalWrap>
+        <img src={this.props.image}/>
+        </ModalWrap>
       </Overlay>
     );
   }
